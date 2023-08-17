@@ -6,9 +6,9 @@ def query_worklist(ris_ip, ris_port):
     ae = AE()
     ae.add_requested_context(ModalityWorklistInformationFind)
 
-    ris_address = (ris_ip, ris_port)
+    #ris_address = (ris_ip, ris_port)
 
-    assoc = ae.associate(ris_address)
+    assoc = ae.associate(ris_ip, ris_port)
     if assoc.is_established:
 
         query_dataset = Dataset()
@@ -31,9 +31,9 @@ def send_dicom_to_pacs(pacs_ip, pacs_port):
     ae.add_requested_context(CTImageStorage)
 
 
-    pacs_address = (pacs_ip, pacs_port)
+    #pacs_address = (pacs_ip, pacs_port)
 
-    assoc = ae.associate(pacs_address)
+    assoc = ae.associate(pacs_ip, pacs_port)
     if assoc.is_established:
 
         ds = Dataset()
