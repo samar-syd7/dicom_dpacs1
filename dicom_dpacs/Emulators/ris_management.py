@@ -117,6 +117,6 @@ def start_dicom_server(host, port, ae_title):
 if __name__ == '__main__':
     host = 'localhost'
     port = 11112
-    ae_title = b'RISM'
+    ae_title = b'RIS'
     print("server is running")
     start_dicom_server(host, port, ae_title)
