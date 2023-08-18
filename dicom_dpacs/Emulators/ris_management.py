@@ -70,40 +70,82 @@
 from pynetdicom import AE, evt, QueryRetrievePresentationContexts
 from pynetdicom.sop_class import ModalityWorklistInformationFind
 from pydicom.dataset import Dataset
+import socket
 def on_c_echo(event):
     print("Received C-ECHO request")
     return 0x0000  # Success status
 
-def send_response_to_modality(response):
-    # Set the modality emulator's IP and port
-    modality_ip = 'localhost'
-    modality_port = 11112  # Replace with the actual port
+# def send_response_to_modality(response):
+#     # Set the modality emulator's IP and port
+#     modality_ip = 'localhost'
+#     modality_port = 11112  # Replace with the actual port
     
-    ae = AE(ae_title=b'MODALITY')
-    assoc = ae.associate(modality_ip, modality_port)
+#     ae = AE(ae_title=b'MODALITY')
+#     assoc = ae.associate(modality_ip, modality_port)
     
-    if assoc.is_established:
-        # Send the response data
-        status = assoc.send_c_find_response(response, 0x0000)
+#     if assoc.is_established:
+#         # Send the response data
+#         status = assoc.send_c_find_response(response, 0x0000)
         
-        # Release the association
-        assoc.release()
-    else:
-        print("Failed to establish association with modality emulator")
+#         # Release the association
+#         assoc.release()
+#     else:
+#         print("Failed to establish association with modality emulator")
+
+# def send_hl7_worklist():
+#     # Set the modality emulator's IP and port
+#     modality_ip = 'localhost'
+#     modality_port = 11112  # Replace with the actual port
+    
+#     # Read the HL7 message from a file
+#     hl7_message_path = 'media/hl7_message_1129757555111.100000025.hl7'
+#     with open(hl7_message_path, 'r') as hl7_file:
+#         hl7_message = hl7_file.read()
+    
+#     ae = AE(ae_title=b'RIS')
+#     assoc = ae.associate(modality_ip, modality_port)
+    
+#     if assoc.is_established:
+#         # Send the HL7 message as a worklist to the modality
+#         assoc.send_hl7_message(hl7_message.encode())
+        
+#         # Release the association
+#         assoc.release()
+#     else:
+#         print("Failed to establish association with modality emulator")
+
+def send_hl7_message(host, port, hl7_message):
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.connect((host, port))
+            s.sendall(hl7_message.encode())
+            response = s.recv(1024)  # Receive response from the modality emulator
+            print("HL7 message sent successfully")
+    except Exception as e:
+        print(f"Failed to send HL7 message: {e}")
 
 
 def on_c_find(event):
     print("Received C-FIND request")
-    response = []
-    response_item = Dataset()
-    response_item.PatientName = 'Doe^John'
-    response_item.PatientID = '12345'
-    response_item.Modality = 'CT'
-    response_item.ScheduledProcedureStepDescription = 'CT Abdomen'
-    response.append(response_item)
-    event.add_response(response)
-    send_response_to_modality(response)
-    return response,0x0000  # Completed status
+    # response = []
+    # response_item = Dataset()
+    # response_item.PatientName = 'Doe^John'
+    # response_item.PatientID = '12345'
+    # response_item.Modality = 'CT'
+    # response_item.ScheduledProcedureStepDescription = 'CT Abdomen'
+    # response.append(response_item)
+    # event.add_response(response)
+    
+    hl7_message_path = 'media/hl7_message_1129757555111.100000025.hl7'
+    with open(hl7_message_path, 'r') as hl7_file:
+        hl7_message = hl7_file.read()
+    
+    modality_ip = 'localhost'
+    modality_port = 11112  # Replace with the actual port
+    
+    send_hl7_message(modality_ip, modality_port, hl7_message)
+    
+    return [], 0x0000  # Completed status
 
 def start_dicom_server(host, port, ae_title):
     ae = AE(ae_title=ae_title)
