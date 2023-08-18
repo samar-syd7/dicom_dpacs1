@@ -11,7 +11,7 @@ hl7_socket.listen(1)
 
 print(f"HL7 Listener is running on {hl7_host}:{hl7_port}")
 
-media_folder = "media/hl7_message"  # Change to your desired media folder path
+media_folder = "media/hl7_messages"  # Change to your desired media folder path
 
 while True:
     connection, client_address = hl7_socket.accept()
