@@ -4,7 +4,7 @@ import socket
 hl7_host = 'localhost'  # Change to your desired host
 hl7_port = 9556         # Change to your desired port
 
-# Create a socket for the HL7 listener
+# Create a socket for the HL7 listener , it is to connect with the client
 hl7_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 hl7_socket.bind((hl7_host, hl7_port))
 hl7_socket.listen(1)
