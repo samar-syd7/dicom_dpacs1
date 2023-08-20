@@ -1,4 +1,5 @@
-import hl7apy.parser
+
+from hl7apy.parser import parse_message
 import os
 from pydicom import dcmwrite
 from pydicom.dataset import Dataset
@@ -9,7 +10,7 @@ with open(hl7_file_path, 'r') as hl7_file:
     hl7_message_str = hl7_file.read()
 
 # Parse the HL7 message
-hl7_message = hl7apy.parse_message(hl7_message_str)
+hl7_message = parse_message(hl7_message_str)
 
 # Extract relevant information from the HL7 message
 patient_name = hl7_message.PID[5][0][0]
