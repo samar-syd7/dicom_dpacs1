@@ -123,29 +123,68 @@ def on_c_echo(event):
 #             print("HL7 message sent successfully")
 #     except Exception as e:
 #         print(f"Failed to send HL7 message: {e}")
+<<<<<<< HEAD
+=======
+
+
+# def on_c_find(event):
+#     print("Received C-FIND request")
+#     # response = []
+#     # response_item = Dataset()
+#     # response_item.PatientName = 'Doe^John'
+#     # response_item.PatientID = '12345'
+#     # response_item.Modality = 'CT'
+#     # response_item.ScheduledProcedureStepDescription = 'CT Abdomen'
+#     # response.append(response_item)
+#     # event.add_response(response)
+    
+#     hl7_message_path = 'media/hl7_message_1129757555111.100000025.hl7'
+#     with open(hl7_message_path, 'r') as hl7_file:
+#         hl7_message = hl7_file.read()
+    
+#     modality_ip = 'localhost'
+#     modality_port = 11112  # Replace with the actual port
+    
+#     send_hl7_message(modality_ip, modality_port, hl7_message)
+    
+#     return [], 0x0000  # Completed status
+
+def send_dicom_worklist(modality_ip, modality_port, dicom_dataset):
+    ae = AE(ae_title=b'RIS')
+    assoc = ae.associate((modality_ip, modality_port))
+
+    if assoc.is_established:
+        status = assoc.send_c_find_request(
+            dicom_dataset, ModalityWorklistInformationFind
+        )
+        assoc.release()
+        return status
+    else:
+        print("Failed to establish association with modality emulator")
+        return None
+>>>>>>> f739d974e63ae10136abb3135242a1703d4d728b
 
 
 # def on_c_find(event):
     print("Received C-FIND request")
-    # response = []
-    # response_item = Dataset()
-    # response_item.PatientName = 'Doe^John'
-    # response_item.PatientID = '12345'
-    # response_item.Modality = 'CT'
-    # response_item.ScheduledProcedureStepDescription = 'CT Abdomen'
-    # response.append(response_item)
-    # event.add_response(response)
     
+<<<<<<< HEAD
     hl7_message_path = 'media/hl7_messages/hl7_message_1129757555111.100000025.hl7'
     with open(hl7_message_path, 'r') as hl7_file:
         hl7_message = hl7_file.read()
+=======
+    # Load the DICOM dataset from a .dcm file
+    dicom_file_path = 'media/modality_worklist/0004.DCM'
+    dicom_dataset = Dataset()
+    dicom_dataset.read(dicom_file_path)
+>>>>>>> f739d974e63ae10136abb3135242a1703d4d728b
     
+    # Send the DICOM worklist item
     modality_ip = 'localhost'
     modality_port = 11112  # Replace with the actual port
+    status = send_dicom_worklist(modality_ip, modality_port, dicom_dataset)
     
-    send_hl7_message(modality_ip, modality_port, hl7_message)
-    
-    return [], 0x0000  # Completed status
+    return [], status
 
 def send_dicom_worklist(modality_ip, modality_port, dicom_dataset):
     ae = AE(ae_title=b'RISM')
