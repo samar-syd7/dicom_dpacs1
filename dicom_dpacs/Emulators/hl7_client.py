@@ -4,17 +4,17 @@ host = 'localhost'  # Change to the server's host
 port = 9556        # Change to the server's port
 
 hl7_message = (
-        "MSH|^~\\&|5.0^QSInsight^L|^^|DBO^QSInsight^L|QS4444^^|20051019163235||VXX^V02|1129757555111.100000025|P|2.3.1|",
-        "MSA|AA|QS444437861000000042||",
-        "QRD|20030828104856|R|I|QueryID01|||5|10^SNOW^MARY^^^^^^^^^^SR|VXI^Vaccine Information^HL70048|SIIS|",
-        "QRF|QS4444|20030828104856|20030828104856||100000001~20021223|",
-        "PID|1||41565^^^^SR~2410629811:72318911||SNOW^MARY^^^^^L||20021223|F|||2 NORTH WAY RD^^MOORESVILLE^INDIANA^46158^^M||(317)123-4567^^PH||EN^English^HL70296|||||||||||||||N|",
-        "PID|2||28694^^^^SR~2663391364:111111111||FROG^KERMIT^^^^^L||20021223|",
-        "NK1|1|PIGGY^MISS|GRD^Guardian^HL70063|"
+        "MSH|^~\\&|MESA_OP|XYZ_HOSPITAL|iFW|ABC_RADIOLOGY|||ORM^O01|101109|P|2.3||||||||",
+        "PID|1||20891312^^^^EPI||APPLESEED^JOHN^A^^MR.^||19661201|M||AfrAm|505 S. HAMILTON AVE^^MADISON^WI^53505^US^^^DN |DN|(608)123-4567|(608)123-5678||S||11480003|123-45-7890||||^^^WI^^",
+        "PD1|||FACILITY(EAST)^^12345|1173^MATTHEWS^JAMES^A^^^",
+        "PV1|||^^^CARE HEALTH SYSTEMS^^^^^||| |1173^MATTHEWS^JAMES^A^^^||||||||||||610613||||||||||||||||||||||||||||||||V",
+        "ORC|NW|987654^EPIC|76543^EPC||Final||^^^20140418170014^^^^||20140418173314|1148^PATTERSON^JAMES^^^^||1173^MATTHEWS^JAMES^A^^^|1133^^^222^^^^^|(618)222-1122||",
+        "OBR|1|363463^EPC|1858^EPC|73610^X-RAY ANKLE 3+ VW^^^X-RAY ANKLE ||||||||||||1173^MATTHEWS^JAMES^A^^^|(608)258-8866||||||||Final||^^^20140418170014^^^^|||||6064^MANSFIELD^JEREMY^^^^||1148010^1A^EAST^X-RAY^^^|^|",
+        "DG1||I10|S82^ANKLE FRACTURE^I10|ANKLE FRACTURE||"
 
 )
 
-hl7_message_str = "\n".join(hl7_message)
+hl7_message_str = "\r".join(hl7_message)
 
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 client_socket.connect((host, port))
@@ -22,3 +22,9 @@ client_socket.sendall(hl7_message_str.encode())
 client_socket.close()
 
 print("HL7 message sent to server")
+
+
+# 'MSH|^~\&|GHH LAB|ELAB-3|GHH OE|BLDG4|200202150930||ORU^R01|CNTRL-3456|P|2.4\r',
+        # 'PID|||555-44-4444||EVERYWOMAN^EVE^E^^^^L|JONES|196203520|F|||153 FERNWOOD DR.^^STATESVILLE^OH^35292||(206)3345232|(206)752-121||||AC555444444||67-A4335^OH^20030520\r',
+        # 'OBR|1|845439^GHH OE|1045813^GHH LAB|1554-5^GLUCOSE|||200202150730||||||||555-55-5555^PRIMARY^PATRICIA P^^^^MD^^LEVEL SEVEN HEALTHCARE, INC.|||||||||F||||||444-44-4444^HIPPOCRATES^HOWARD H^^^^MD\r',
+        # 'OBX|1|SN|1554-5^GLUCOSE^POST 12H CFST:MCNC:PT:SER/PLAS:QN||^182|mg/dl|70_105|H|||F\r',
