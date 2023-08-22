@@ -1,10 +1,7 @@
-dicom_dpacs
-
---pacs_server.py
-  it works as a server to store the images from client or user and archive into /media or db-archive
-
---ris_mg.py
-  it works as the complete information flow of patient and his data(dicom file),also the billing and other private data's
-
---modality.py
-  it works as the connecter between all the .py server's
+msh = "MSH|^~\&|GHH_ADT||||20080115153000||ADT^A01^ADT_A01|0123456789|P|2.5||||AL\r"
+evn = "EVN||20080115153000||AAA|AAA|20080114003000\r"
+pid = "PID|1||566-554-3423^^^GHH^MR||EVERYMAN^ADAM^A|||M|||2222 HOME STREET^^ANN ARBOR^MI^^USA||555-555-2004~444-333-222|||M\r"
+nk1 = "NK1|1|NUCLEAR^NELDA^W|SPO|2222 HOME STREET^^ANN ARBOR^MI^^USA\r"
+pv1 = "PV1|1|I|GHH PATIENT WARD|U||||^SENDER^SAM^^MD|^PUMP^PATRICK^P|CAR||||2|A0|||||||||||||||||||||||||||||2008\r"
+in1 = "IN1|1|HCID-GL^GLOBAL|HCID-23432|HC PAYOR, INC.|5555 INSURERS CIRCLE^^ANN ARBOR^MI^99999^USA||||||||||||||||||||||||||||||||||||||||||||444-33-3333"s = msh + evn + pid + nk1 + pv1 + in1
+message = parse_message(s)
