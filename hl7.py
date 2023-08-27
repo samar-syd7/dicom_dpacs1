@@ -1,3 +1,5 @@
+# from hl7 message to database storage 
+
 import os
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "dicom_dpacs.settings")
 import django
@@ -14,14 +16,14 @@ from Modality.models import Order, Modality
 def post():
     print('+++++++++')
     # try:
-    hl7_file_path = os.path.join("media/hl7_messages", "hl7_message_101109.hl7")
+    hl7_file_path = os.path.join("media/hl7_messages", "hl7_message_1129757555111.100000025.hl7")
     with open(hl7_file_path, 'r') as hl7_file:
         hl7_message_str = hl7_file.read()
     # hl7_message_str = request.body.decode("utf-8")  # Get the HL7 message from the request
     hl7_message = hl7_message_str.split('\n')
 
     # Access the first PID segment
-    pid_segment = hl7_message[1].split('|')
+    pid_segment = hl7_message[4].split('|')
 
     # Accessing patient name (field index: 5)
     patient_name = pid_segment[5]

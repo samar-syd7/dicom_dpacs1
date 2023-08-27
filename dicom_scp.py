@@ -1,3 +1,5 @@
+# this is to connect with modality and send worklist
+
 import os
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "dicom_dpacs.settings")
 import django
