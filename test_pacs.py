@@ -4,10 +4,13 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "dicom_dpacs.settings")
 import django
 django.setup()
 
-from pynetdicom import AE, evt
+from pydicom.uid import generate_uid
+from pynetdicom import AE, evt, debug_logger
 from pynetdicom.sop_class import CTImageStorage
 from django.conf import settings
 from Modality.models import Study, Series, Image  # Import your Django models
+
+debug_logger()
 
 def handle_c_store(event):
     ds = event.dataset
@@ -20,7 +23,7 @@ def handle_c_store(event):
 
     print("========================= after conversion")
     # Create or retrieve Study and Series records in your database
-    study_instance_uid = ds.StudyInstanceUID
+    study_instance_uid = generate_uid()
     patient_name = ds.PatientName
     patient_id = ds.PatientID
     print("========================= before save")
@@ -43,7 +46,9 @@ def handle_c_store(event):
 
 def start_dicom_scp(host, port, ae_title):
     ae = AE(ae_title=ae_title)
+    ae.add_supported_context('1.2.840.10008.1.1')
     ae.add_supported_context(CTImageStorage)  # Add other SOP classes as needed
+    ae.add_supported_context('1.2.840.10008.5.1.4.1.1.7')
 
     handlers = [(evt.EVT_C_STORE, handle_c_store)]
     ae.start_server((host, port), evt_handlers=handlers)
