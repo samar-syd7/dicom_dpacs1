@@ -4,11 +4,11 @@ from pydicom import dcmread
 from django.shortcuts import render, redirect
 from django.core.files.storage import FileSystemStorage
 import pydicom
-from PIL import Image
+# from PIL import Image
 import io
 import os
-import numpy as np
-import cv2
+# import numpy as np
+# import cv2
 import pydicom
 
 def upload_convert_store(request):
@@ -25,7 +25,7 @@ def upload_convert_store(request):
         dicom_path = os.path.join("media/", filename)
         image = dicom_path.replace('.DCM', '.jpg')
         print(image)
-        cv2.imwrite(os.path.join(image), pixel_array_numpy)
+        # cv2.imwrite(os.path.join(image), pixel_array_numpy)
 
         jpg_filename = image.replace('media/','')
 

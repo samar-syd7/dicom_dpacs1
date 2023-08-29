@@ -1,5 +1,5 @@
 from django.shortcuts import render,HttpResponse
-from .models import Order,Modality
+from .models import Order
 import datetime
 # Create your views here.
 def home(request):

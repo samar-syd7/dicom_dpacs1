@@ -1,4 +1,3 @@
-# pacs_server.py
 import os
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "dicom_dpacs.settings")
 import django
@@ -8,39 +7,80 @@ from pydicom.uid import generate_uid
 from pynetdicom import AE, evt, debug_logger
 from pynetdicom.sop_class import CTImageStorage
 from django.conf import settings
-from Modality.models import Study, Series, Image  # Import your Django models
+from Modality.models import Study, Series, Image, Patient, Report, ModalitySystem, File
 
-debug_logger()
+import random
+def get_random():
+    return random.randint(10000,99999999)
+
+# debug_logger()
 
 def handle_c_store(event):
-    ds = event.dataset
+    ds = event.dataset   
+    for i in ds:
+        print(i,'\n')
+    
     instance_uid = ds.SOPInstanceUID
-    print("========================= c store")
 
     # Save the DICOM image to the media directory
-    dicom_path = f'media/{instance_uid}.dcm'
+    dicom_path = os.path.join(settings.MEDIA_ROOT, f'{instance_uid}.dcm')
     ds.save_as(dicom_path)
 
-    print("========================= after conversion")
     # Create or retrieve Study and Series records in your database
     study_instance_uid = generate_uid()
-    patient_name = ds.PatientName
+    patient_no = get_random()
     patient_id = ds.PatientID
-    print("========================= before save")
+    patient_birth_date = ds.PatientBirthDate
+    patient_sex = ds.PatientSex
+    
+
+    # Create or retrieve the Patient record
+    patient= Patient(
+        PatientNo=patient_no,
+        PatientName=ds.PatientName,
+        PatientID=patient_id,
+        PatientBirthDate =patient_birth_date,
+        PatientSex =patient_sex
+    )
+    patient.save()
+    
+    # Create the Study record 
+    accession_no = ds.AccessionNumber
+    study_description = ds.StudyDescription
+    study_no = get_random()
+       
     study = Study(
         study_instance_uid=study_instance_uid,
-        patient_name= patient_name, patient_id=patient_id
+        PatientNo_id= ds.PatientID,
+        accession_no = accession_no,
+        study_description = study_description,
+        study_no = study_no,        
     )
     study.save()
-    series_instance_uid = ds.SeriesInstanceUID
 
-    series, created = Series.objects.get_or_create(
-        series_instance_uid=series_instance_uid, study=study
-    )
+    # Create the Series record
+    series_instance_uid = generate_uid()
+    series_no = ds.SeriesNumber
+    series_number = get_random()
+    series_description = ds.SeriesDescription
+    series = Series(
+        series_instance_uid=series_instance_uid,
+        study_no=study_no,
+        series_no=series_no,
+        series_number = series_number,
+        accession_no = accession_no,
+        series_description = series_description,
+        
+        
+    ).save()
 
     # Save the Image record in your database
-    image = Image(series=series, dicom_path=dicom_path)
-    image.save()
+    image = Image(
+        series=series,
+        sop_instance_uid=instance_uid,
+        #modality=ds.Modality,
+        
+    ).save()
 
     return 0x0000  # Success status
 
