@@ -8,7 +8,7 @@ from pynetdicom import AE, evt
 from pynetdicom.sop_class import ModalityWorklistInformationFind
 from pydicom.dataset import Dataset
 from django.conf import settings
-from Modality.models import Modality, Order
+from Modality.models import Order
 
 def on_c_echo(event):
     print("Received C-ECHO request")
@@ -16,14 +16,12 @@ def on_c_echo(event):
 
 def handle_mwl_query(event):
     query_attrs = event.identifier
-
-    modality_records = Modality.objects.all()
+    
     order_records = Order.objects.all()
 
     response_ds_list = []
 
-    for modality in modality_records:
-        for order in order_records:
+    for order in order_records:
             response_ds = Dataset()
             response_ds.PatientID = order.patient_id
             response_ds.PatientName = order.patient_name
@@ -36,7 +34,7 @@ def handle_mwl_query(event):
             # response_ds.RequestedProcedureDescription = order.requested_procedure_description
             response_ds.ScheduledProcedureStepStartDate = order.patient_birth_date.strftime("%Y%m%d")
             # response_ds.ScheduledProcedureStepStartTime = order.patient_birth_date.strftime("%H%M%S")
-            response_ds.Modality = modality.name
+            response_ds.Modality = "CR"
             response_ds.ScheduledStationAETitle = "CT"
             
             response_ds_list.append(response_ds)
